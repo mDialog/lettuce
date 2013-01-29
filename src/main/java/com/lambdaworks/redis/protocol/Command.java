@@ -3,6 +3,7 @@
 package com.lambdaworks.redis.protocol;
 
 import com.lambdaworks.redis.RedisCommandInterruptedException;
+import com.lambdaworks.redis.RedisException;
 import org.jboss.netty.buffer.ChannelBuffer;
 
 import java.util.concurrent.*;
@@ -10,6 +11,7 @@ import akka.dispatch.Promise;
 import akka.dispatch.DefaultPromise;
 import akka.dispatch.ExecutionContext;
 import scala.Right;
+import scala.Left;
 
 /**
  * A redis command and its result. All successfully executed commands will
@@ -157,7 +159,11 @@ public class Command<K, V, T> implements Future<T> {
      */
     public void complete() {
         latch.countDown();
-        promise.complete( new Right(output.get()) );
+        if (output.hasError()) {
+            promise.complete( new Left(new RedisException(output.getError())) );
+        } else {
+            promise.complete( new Right(output.get()) );
+        }
     }
 
     /**

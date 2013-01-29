@@ -18,7 +18,6 @@ import akka.dispatch.Promise;
 import static com.lambdaworks.redis.protocol.CommandKeyword.*;
 import static com.lambdaworks.redis.protocol.CommandType.*;
 
-
 /**
  * An asynchronous thread-safe connection to a redis server. Multiple threads may
  * share one {@link RedisAsyncConnection} provided they avoid blocking and transactional

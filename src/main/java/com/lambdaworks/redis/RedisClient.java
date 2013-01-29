@@ -40,8 +40,8 @@ public class RedisClient {
      *
      * @param host    Server hostname.
      */
-    public RedisClient(String host, ExecutionContext executor) {
-        this(host, 6379, executor);
+    public RedisClient(String host, ExecutionContext executor, NioClientSocketChannelFactory factory) {
+        this(host, 6379, executor, factory);
     }
 
     /**
@@ -52,11 +52,11 @@ public class RedisClient {
      * @param host    Server hostname.
      * @param port    Server port.
      */
-    public RedisClient(String host, int port, ExecutionContext executor) {
+    public RedisClient(String host, int port, ExecutionContext executor, NioClientSocketChannelFactory factory) {
         this.executor = executor;
-        ExecutorService connectors = Executors.newFixedThreadPool(1);
-        ExecutorService workers    = Executors.newCachedThreadPool();
-        ClientSocketChannelFactory factory = new NioClientSocketChannelFactory(connectors, workers);
+        //ExecutorService connectors = Executors.newFixedThreadPool(1);
+        //ExecutorService workers    = Executors.newCachedThreadPool();
+        //ClientSocketChannelFactory factory = new NioClientSocketChannelFactory(connectors, workers);
 
         InetSocketAddress addr = new InetSocketAddress(host, port);
 
