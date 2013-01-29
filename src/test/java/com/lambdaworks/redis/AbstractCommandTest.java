@@ -5,6 +5,7 @@ package com.lambdaworks.redis;
 import org.junit.*;
 
 import java.util.*;
+import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
 
 public abstract class AbstractCommandTest {
     public static final String host = "localhost";
@@ -17,9 +18,12 @@ public abstract class AbstractCommandTest {
     protected String key   = "key";
     protected String value = "value";
 
+    private NioClientSocketClientFactory factory =
+        new NioClientSocketChannelFactory(Executors.newFixedThreadPool(1), Executors.newCachedThreadPool);
+
     @BeforeClass
     public static void setupClient() {
-        client = new RedisClient(host, port);
+        client = new RedisClient(host, port, null, factory);
     }
 
     @AfterClass

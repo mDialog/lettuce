@@ -52,7 +52,7 @@ public class ClientTest extends AbstractCommandTest {
         RedisClient client = new RedisClient("invalid");
         exception.expect(RedisException.class);
         exception.expectMessage("Unable to connect");
-        client.connect();
+        client.connectAsync();
     }
 
     @Test

@@ -11,6 +11,7 @@ import org.jboss.netty.channel.*;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.*;
+import akka.dispatch.ExecutionContext;
 
 import static com.lambdaworks.redis.protocol.CommandType.*;
 
@@ -41,8 +42,8 @@ public class RedisPubSubConnection<K, V> extends RedisAsyncConnection<K, V> {
      * @param timeout   Maximum time to wait for a responses.
      * @param unit      Unit of time for the timeout.
      */
-    public RedisPubSubConnection(BlockingQueue<Command<K, V, ?>> queue, RedisCodec<K, V> codec, long timeout, TimeUnit unit) {
-        super(queue, codec, timeout, unit);
+    public RedisPubSubConnection(BlockingQueue<Command<K, V, ?>> queue, RedisCodec<K, V> codec, long timeout, TimeUnit unit, ExecutionContext executor) {
+        super(queue, codec, timeout, unit, executor);
         listeners = new CopyOnWriteArrayList<RedisPubSubListener<K, V>>();
         channels  = new HashSet<K>();
         patterns  = new HashSet<K>();

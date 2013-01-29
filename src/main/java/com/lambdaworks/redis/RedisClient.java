@@ -84,16 +84,6 @@ public class RedisClient {
     }
 
     /**
-     * Open a new synchronous connection to the redis server that treats
-     * keys and values as UTF-8 strings.
-     *
-     * @return A new connection.
-     */
-    public RedisConnection<String, String> connect() {
-        return connect(new Utf8StringCodec());
-    }
-
-    /**
      * Open a new asynchronous connection to the redis server that treats
      * keys and values as UTF-8 strings.
      *
@@ -111,18 +101,6 @@ public class RedisClient {
      */
     public RedisPubSubConnection<String, String> connectPubSub() {
         return connectPubSub(new Utf8StringCodec());
-    }
-
-    /**
-     * Open a new synchronous connection to the redis server. Use the supplied
-     * {@link RedisCodec codec} to encode/decode keys and values.
-     *
-     * @param codec Use this codec to encode/decode keys and values.
-     *
-     * @return A new connection.
-     */
-    public <K, V> RedisConnection<K, V> connect(RedisCodec<K, V> codec) {
-        return new RedisConnection<K, V>(connectAsync(codec));
     }
 
     /**
@@ -154,7 +132,7 @@ public class RedisClient {
         BlockingQueue<Command<K, V, ?>> queue = new LinkedBlockingQueue<Command<K, V, ?>>();
 
         PubSubCommandHandler<K, V> handler = new PubSubCommandHandler<K, V>(queue, codec);
-        RedisPubSubConnection<K, V> connection = new RedisPubSubConnection<K, V>(queue, codec, timeout, unit);
+        RedisPubSubConnection<K, V> connection = new RedisPubSubConnection<K, V>(queue, codec, timeout, unit, executor);
 
         return connect(handler, connection);
     }
