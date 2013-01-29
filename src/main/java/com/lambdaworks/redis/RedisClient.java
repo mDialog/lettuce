@@ -18,6 +18,7 @@ import org.jboss.netty.util.Timer;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.concurrent.*;
+import akka.dispatch.ExecutionContext;
 
 /**
  * A scalable thread-safe <a href="http://redis.io/">Redis</a> client. Multiple threads
@@ -32,14 +33,15 @@ public class RedisClient {
     private ChannelGroup channels;
     private long timeout;
     private TimeUnit unit;
+    private ExecutionContext executor;
 
     /**
      * Create a new client that connects to the supplied host on the default port.
      *
      * @param host    Server hostname.
      */
-    public RedisClient(String host) {
-        this(host, 6379);
+    public RedisClient(String host, ExecutionContext executor) {
+        this(host, 6379, executor);
     }
 
     /**
@@ -50,7 +52,8 @@ public class RedisClient {
      * @param host    Server hostname.
      * @param port    Server port.
      */
-    public RedisClient(String host, int port) {
+    public RedisClient(String host, int port, ExecutionContext executor) {
+        this.executor = executor;
         ExecutorService connectors = Executors.newFixedThreadPool(1);
         ExecutorService workers    = Executors.newCachedThreadPool();
         ClientSocketChannelFactory factory = new NioClientSocketChannelFactory(connectors, workers);
@@ -134,7 +137,7 @@ public class RedisClient {
         BlockingQueue<Command<K, V, ?>> queue = new LinkedBlockingQueue<Command<K, V, ?>>();
 
         CommandHandler<K, V> handler = new CommandHandler<K, V>(queue);
-        RedisAsyncConnection<K, V> connection = new RedisAsyncConnection<K, V>(queue, codec, timeout, unit);
+        RedisAsyncConnection<K, V> connection = new RedisAsyncConnection<K, V>(queue, codec, timeout, unit, executor);
 
         return connect(handler, connection);
     }

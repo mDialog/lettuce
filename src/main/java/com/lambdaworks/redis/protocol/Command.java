@@ -6,6 +6,10 @@ import com.lambdaworks.redis.RedisCommandInterruptedException;
 import org.jboss.netty.buffer.ChannelBuffer;
 
 import java.util.concurrent.*;
+import akka.dispatch.Promise;
+import akka.dispatch.DefaultPromise;
+import akka.dispatch.ExecutionContext;
+import scala.Right;
 
 /**
  * A redis command and its result. All successfully executed commands will
@@ -15,6 +19,8 @@ import java.util.concurrent.*;
  *
  * @author Will Glozer
  */
+
+
 public class Command<K, V, T> implements Future<T> {
     private static final byte[] CRLF = "\r\n".getBytes(Charsets.ASCII);
 
@@ -23,6 +29,8 @@ public class Command<K, V, T> implements Future<T> {
     protected CommandOutput<K, V, T> output;
     protected CountDownLatch latch;
 
+    public Promise<T> promise;
+
     /**
      * Create a new command with the supplied type and args.
      *
@@ -30,12 +38,14 @@ public class Command<K, V, T> implements Future<T> {
      * @param output    Command output.
      * @param args      Command args, if any.
      * @param multi     Flag indicating if MULTI active.
+     * @param executor  ExecutionContext for the akka future
      */
-    public Command(CommandType type, CommandOutput<K, V, T> output, CommandArgs<K, V> args, boolean multi) {
+    public Command(CommandType type, CommandOutput<K, V, T> output, CommandArgs<K, V> args, boolean multi, ExecutionContext executor) {
         this.type   = type;
         this.output = output;
         this.args   = args;
         this.latch  = new CountDownLatch(multi ? 2 : 1);
+        this.promise = new DefaultPromise<T>(executor);
     }
 
     /**
@@ -147,6 +157,7 @@ public class Command<K, V, T> implements Future<T> {
      */
     public void complete() {
         latch.countDown();
+        promise.complete( new Right(output.get()) );
     }
 
     /**
