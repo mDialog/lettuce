@@ -11,7 +11,7 @@ import org.jboss.netty.channel.*;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.*;
-import akka.dispatch.ExecutionContext;
+import scala.concurrent.ExecutionContext;
 
 import static com.lambdaworks.redis.protocol.CommandType.*;
 

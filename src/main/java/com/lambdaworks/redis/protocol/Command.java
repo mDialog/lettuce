@@ -7,9 +7,8 @@ import com.lambdaworks.redis.RedisException;
 import org.jboss.netty.buffer.ChannelBuffer;
 
 import java.util.concurrent.*;
-import akka.dispatch.Promise;
-import akka.dispatch.DefaultPromise;
-import akka.dispatch.ExecutionContext;
+import scala.concurrent.Promise;
+import scala.concurrent.ExecutionContext;
 import scala.Right;
 import scala.Left;
 
@@ -47,7 +46,7 @@ public class Command<K, V, T> implements Future<T> {
         this.output = output;
         this.args   = args;
         this.latch  = new CountDownLatch(multi ? 2 : 1);
-        this.promise = new DefaultPromise<T>(executor);
+        this.promise = new scala.concurrent.impl.Promise.DefaultPromise<T>(executor);
     }
 
     /**

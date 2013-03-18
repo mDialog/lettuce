@@ -1,129 +1,130 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.mdialog</groupId>
-  <artifactId>lettuce</artifactId>
-  <version>2.3.2</version>
+    <groupId>com.mdialog</groupId>
+    <artifactId>lettuce</artifactId>
+    <version>2.3.2</version>
 
-  <packaging>jar</packaging>
+    <packaging>jar</packaging>
 
-  <name>lettuce</name>
-  <description>Java redis client</description>
-  <url>http://github.com/wg/lettuce</url>
-
-  <licenses>
-    <license>
-      <name>Apache License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-
-  <developers>
-    <developer>
-      <id>will</id>
-      <name>Will Glozer</name>
-    </developer>
-  </developers>
-
-  <dependencies>
-   <dependency>
-     <groupId>io.netty</groupId>
-     <artifactId>netty</artifactId>
-     <version>3.5.10.Final</version>
-   </dependency>
-
-   <dependency>
-     <groupId>com.typesafe.akka</groupId>
-     <artifactId>akka-actor</artifactId>
-     <version>2.0.3</version>
-   </dependency>
-   
-   <dependency>
-     <groupId>junit</groupId>
-     <artifactId>junit</artifactId>
-     <version>4.8.2</version>
-     <scope>test</scope>
-   </dependency>
-  </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
-        <configuration>
-          <compilerArgument>-Xlint</compilerArgument>
-          <showWarnings>true</showWarnings>
-          <showDeprecation>true</showDeprecation>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.7</version>
-        <configuration>
-          <level>public</level>
-          <links>
-            <link>http://docs.jboss.org/netty/3.2/api/</link>
-          </links>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.7.2</version>
-        <configuration>
-          <useFile>false</useFile>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-gpg-plugin</artifactId>
-        <version>1.1</version>
-        <executions>
-          <execution>
-            <id>sign-artifacts</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>sign</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-
-  <repositories>
-    <repository>
-      <id>typesafe-releases</id>
-      <url>http://repo.typesafe.com/typesafe/releases</url>
-    </repository>
-  </repositories>
-
-  <scm>
-    <connection>scm:git:git://github.com/wg/lettuce.git</connection>
-    <developerConnection>scm:git:git://github.com/wg/lettuce.git</developerConnection>
+    <name>lettuce</name>
+    <description>Java redis client</description>
     <url>http://github.com/wg/lettuce</url>
-  </scm>
 
-  <distributionManagement>
-    <repository>
-      <id>mdialog</id>
-      <name>mDialog Release Repository</name>
-      <url>http://artifactory.mdialog.com/artifactory/releases</url>
-    </repository>
-  </distributionManagement>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>will</id>
+            <name>Will Glozer</name>
+        </developer>
+    </developers>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty</artifactId>
+            <version>3.5.10.Final</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-actor_2.10</artifactId>
+            <version>2.1.1</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <compilerArgument>-Xlint</compilerArgument>
+                    <showWarnings>true</showWarnings>
+                    <showDeprecation>true</showDeprecation>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <level>public</level>
+                    <links>
+                        <link>http://docs.jboss.org/netty/3.2/api/</link>
+                    </links>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.7.2</version>
+                <configuration>
+                    <useFile>false</useFile>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>typesafe-releases</id>
+            <url>http://repo.typesafe.com/typesafe/releases</url>
+        </repository>
+    </repositories>
+
+    <scm>
+        <connection>scm:git:git://github.com/wg/lettuce.git</connection>
+        <developerConnection>scm:git:git://github.com/wg/lettuce.git</developerConnection>
+        <url>http://github.com/wg/lettuce</url>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>mdialog</id>
+            <name>mDialog Release Repository</name>
+            <url>http://artifactory.mdialog.com/artifactory/releases</url>
+        </repository>
+    </distributionManagement>
 </project>

@@ -12,8 +12,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.concurrent.*;
-import akka.dispatch.ExecutionContext;
-import akka.dispatch.Promise;
+import scala.concurrent.ExecutionContext;
+import scala.concurrent.Promise;
 
 import static com.lambdaworks.redis.protocol.CommandKeyword.*;
 import static com.lambdaworks.redis.protocol.CommandType.*;
@@ -68,7 +68,7 @@ public class RedisAsyncConnection<K, V> extends SimpleChannelUpstreamHandler {
         this.unit = unit;
     }
 
-    public akka.dispatch.Future<Long> append(K key, V value) {
+    public scala.concurrent.Future<Long> append(K key, V value) {
         return dispatch(APPEND, new IntegerOutput<K, V>(codec), key, value);
     }
 
@@ -80,484 +80,484 @@ public class RedisAsyncConnection<K, V> extends SimpleChannelUpstreamHandler {
         return status;
     }
 
-    public akka.dispatch.Future<String> bgrewriteaof() {
+    public scala.concurrent.Future<String> bgrewriteaof() {
         return dispatch(BGREWRITEAOF, new StatusOutput<K, V>(codec));
     }
 
-    public akka.dispatch.Future<String> bgsave() {
+    public scala.concurrent.Future<String> bgsave() {
         return dispatch(BGSAVE, new StatusOutput<K, V>(codec));
     }
 
-    public akka.dispatch.Future<Long> bitcount(K key) {
+    public scala.concurrent.Future<Long> bitcount(K key) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key);
         return dispatch(BITCOUNT, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Long> bitcount(K key, long start, long end) {
+    public scala.concurrent.Future<Long> bitcount(K key, long start, long end) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec);
         args.addKey(key).add(start).add(end);
         return dispatch(BITCOUNT, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Long> bitopAnd(K destination, K... keys) {
+    public scala.concurrent.Future<Long> bitopAnd(K destination, K... keys) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec);
         args.add(AND).addKey(destination).addKeys(keys);
         return dispatch(BITOP, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Long> bitopNot(K destination, K source) {
+    public scala.concurrent.Future<Long> bitopNot(K destination, K source) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec);
         args.add(NOT).addKey(destination).addKey(source);
         return dispatch(BITOP, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Long> bitopOr(K destination, K... keys) {
+    public scala.concurrent.Future<Long> bitopOr(K destination, K... keys) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec);
         args.add(OR).addKey(destination).addKeys(keys);
         return dispatch(BITOP, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Long> bitopXor(K destination, K... keys) {
+    public scala.concurrent.Future<Long> bitopXor(K destination, K... keys) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec);
         args.add(XOR).addKey(destination).addKeys(keys);
         return dispatch(BITOP, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<KeyValue<K, V>> blpop(long timeout, K... keys) {
+    public scala.concurrent.Future<KeyValue<K, V>> blpop(long timeout, K... keys) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKeys(keys).add(timeout);
         return dispatch(BLPOP, new KeyValueOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<KeyValue<K, V>> brpop(long timeout, K... keys) {
+    public scala.concurrent.Future<KeyValue<K, V>> brpop(long timeout, K... keys) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKeys(keys).add(timeout);
         return dispatch(BRPOP, new KeyValueOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<V> brpoplpush(long timeout, K source, K destination) {
+    public scala.concurrent.Future<V> brpoplpush(long timeout, K source, K destination) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec);
         args.addKey(source).addKey(destination).add(timeout);
         return dispatch(BRPOPLPUSH, new ValueOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<String> clientKill(String addr) {
+    public scala.concurrent.Future<String> clientKill(String addr) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).add(KILL).add(addr);
         return dispatch(CLIENT, new StatusOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<String> clientList() {
+    public scala.concurrent.Future<String> clientList() {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).add(LIST);
         return dispatch(CLIENT, new StatusOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<List<String>> configGet(String parameter) {
+    public scala.concurrent.Future<List<String>> configGet(String parameter) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).add(GET).add(parameter);
         return dispatch(CONFIG, new StringListOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<String> configResetstat() {
+    public scala.concurrent.Future<String> configResetstat() {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).add(RESETSTAT);
         return dispatch(CONFIG, new StatusOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<String> configSet(String parameter, String value) {
+    public scala.concurrent.Future<String> configSet(String parameter, String value) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).add(SET).add(parameter).add(value);
         return dispatch(CONFIG, new StatusOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Long> dbsize() {
+    public scala.concurrent.Future<Long> dbsize() {
         return dispatch(DBSIZE, new IntegerOutput<K, V>(codec));
     }
 
-    public akka.dispatch.Future<String> debugObject(K key) {
+    public scala.concurrent.Future<String> debugObject(K key) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).add(OBJECT).addKey(key);
         return dispatch(DEBUG, new StatusOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Long> decr(K key) {
+    public scala.concurrent.Future<Long> decr(K key) {
         return dispatch(DECR, new IntegerOutput<K, V>(codec), key);
     }
 
-    public akka.dispatch.Future<Long> decrby(K key, long amount) {
+    public scala.concurrent.Future<Long> decrby(K key, long amount) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(amount);
         return dispatch(DECRBY, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Long> del(K... keys) {
+    public scala.concurrent.Future<Long> del(K... keys) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKeys(keys);
         return dispatch(DEL, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<String> discard() {
+    public scala.concurrent.Future<String> discard() {
         multi = null;
         return dispatch(DISCARD, new StatusOutput<K, V>(codec));
     }
 
-    public akka.dispatch.Future<byte[]> dump(K key) {
+    public scala.concurrent.Future<byte[]> dump(K key) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key);
         return dispatch(DUMP, new ByteArrayOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<V> echo(V msg) {
+    public scala.concurrent.Future<V> echo(V msg) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addValue(msg);
         return dispatch(ECHO, new ValueOutput<K, V>(codec), args);
     }
 
-    public <T> akka.dispatch.Future<T> eval(V script, ScriptOutputType type, K[] keys, V... values) {
+    public <T> scala.concurrent.Future<T> eval(V script, ScriptOutputType type, K[] keys, V... values) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec);
         args.addValue(script).add(keys.length).addKeys(keys).addValues(values);
         CommandOutput<K, V, T> output = newScriptOutput(codec, type);
         return dispatch(EVAL, output, args);
     }
 
-    public <T> akka.dispatch.Future<T> evalsha(String digest, ScriptOutputType type, K[] keys, V... values) {
+    public <T> scala.concurrent.Future<T> evalsha(String digest, ScriptOutputType type, K[] keys, V... values) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec);
         args.add(digest).add(keys.length).addKeys(keys).addValues(values);
         CommandOutput<K, V, T> output = newScriptOutput(codec, type);
         return dispatch(EVALSHA, output, args);
     }
 
-    public akka.dispatch.Future<Boolean> exists(K key) {
+    public scala.concurrent.Future<Boolean> exists(K key) {
         return dispatch(EXISTS, new BooleanOutput<K, V>(codec), key);
     }
 
-    public akka.dispatch.Future<Boolean> expire(K key, long seconds) {
+    public scala.concurrent.Future<Boolean> expire(K key, long seconds) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(seconds);
         return dispatch(EXPIRE, new BooleanOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Boolean> expireat(K key, Date timestamp) {
+    public scala.concurrent.Future<Boolean> expireat(K key, Date timestamp) {
         return expireat(key, timestamp.getTime() / 1000);
     }
 
-    public akka.dispatch.Future<Boolean> expireat(K key, long timestamp) {
+    public scala.concurrent.Future<Boolean> expireat(K key, long timestamp) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(timestamp);
         return dispatch(EXPIREAT, new BooleanOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<List<Object>> exec() {
+    public scala.concurrent.Future<List<Object>> exec() {
         MultiOutput<K, V> multi = this.multi;
         this.multi = null;
         return dispatch(EXEC, multi);
     }
 
-    public akka.dispatch.Future<String> flushall() throws Exception {
+    public scala.concurrent.Future<String> flushall() throws Exception {
         return dispatch(FLUSHALL, new StatusOutput<K, V>(codec));
     }
 
-    public akka.dispatch.Future<String> flushdb() throws Exception {
+    public scala.concurrent.Future<String> flushdb() throws Exception {
         return dispatch(FLUSHDB, new StatusOutput<K, V>(codec));
     }
 
-    public akka.dispatch.Future<V> get(K key) {
+    public scala.concurrent.Future<V> get(K key) {
         return dispatch(GET, new ValueOutput<K, V>(codec), key);
     }
 
-    public akka.dispatch.Future<Long> getbit(K key, long offset) {
+    public scala.concurrent.Future<Long> getbit(K key, long offset) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(offset);
         return dispatch(GETBIT, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<V> getrange(K key, long start, long end) {
+    public scala.concurrent.Future<V> getrange(K key, long start, long end) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(start).add(end);
         return dispatch(GETRANGE, new ValueOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<V> getset(K key, V value) {
+    public scala.concurrent.Future<V> getset(K key, V value) {
         return dispatch(GETSET, new ValueOutput<K, V>(codec), key, value);
     }
 
-    public akka.dispatch.Future<Long> hdel(K key, K... fields) {
+    public scala.concurrent.Future<Long> hdel(K key, K... fields) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).addKeys(fields);
         return dispatch(HDEL, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Boolean> hexists(K key, K field) {
+    public scala.concurrent.Future<Boolean> hexists(K key, K field) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).addKey(field);
         return dispatch(HEXISTS, new BooleanOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<V> hget(K key, K field) {
+    public scala.concurrent.Future<V> hget(K key, K field) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).addKey(field);
         return dispatch(HGET, new ValueOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Long> hincrby(K key, K field, long amount) {
+    public scala.concurrent.Future<Long> hincrby(K key, K field, long amount) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).addKey(field).add(amount);
         return dispatch(HINCRBY, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Double> hincrbyfloat(K key, K field, double amount) {
+    public scala.concurrent.Future<Double> hincrbyfloat(K key, K field, double amount) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).addKey(field).add(amount);
         return dispatch(HINCRBYFLOAT, new DoubleOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Map<K, V>> hgetall(K key) {
+    public scala.concurrent.Future<Map<K, V>> hgetall(K key) {
         return dispatch(HGETALL, new MapOutput<K, V>(codec), key);
     }
 
-    public akka.dispatch.Future<List<K>> hkeys(K key) {
+    public scala.concurrent.Future<List<K>> hkeys(K key) {
         return dispatch(HKEYS, new KeyListOutput<K, V>(codec), key);
     }
 
-    public akka.dispatch.Future<Long> hlen(K key) {
+    public scala.concurrent.Future<Long> hlen(K key) {
         return dispatch(HLEN, new IntegerOutput<K, V>(codec), key);
     }
 
-    public akka.dispatch.Future<List<V>> hmget(K key, K... fields) {
+    public scala.concurrent.Future<List<V>> hmget(K key, K... fields) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).addKeys(fields);
         return dispatch(HMGET, new ValueListOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<String> hmset(K key, Map<K, V> map) {
+    public scala.concurrent.Future<String> hmset(K key, Map<K, V> map) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(map);
         return dispatch(HMSET, new StatusOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Boolean> hset(K key, K field, V value) {
+    public scala.concurrent.Future<Boolean> hset(K key, K field, V value) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).addKey(field).addValue(value);
         return dispatch(HSET, new BooleanOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Boolean> hsetnx(K key, K field, V value) {
+    public scala.concurrent.Future<Boolean> hsetnx(K key, K field, V value) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).addKey(field).addValue(value);
         return dispatch(HSETNX, new BooleanOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<List<V>> hvals(K key) {
+    public scala.concurrent.Future<List<V>> hvals(K key) {
         return dispatch(HVALS, new ValueListOutput<K, V>(codec), key);
     }
 
-    public akka.dispatch.Future<Long> incr(K key) {
+    public scala.concurrent.Future<Long> incr(K key) {
         return dispatch(INCR, new IntegerOutput<K, V>(codec), key);
     }
 
-    public akka.dispatch.Future<Long> incrby(K key, long amount) {
+    public scala.concurrent.Future<Long> incrby(K key, long amount) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(amount);
         return dispatch(INCRBY, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Double> incrbyfloat(K key, double amount) {
+    public scala.concurrent.Future<Double> incrbyfloat(K key, double amount) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(amount);
         return dispatch(INCRBYFLOAT, new DoubleOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<String> info() {
+    public scala.concurrent.Future<String> info() {
         return dispatch(INFO, new StatusOutput<K, V>(codec));
     }
 
-    public akka.dispatch.Future<List<K>> keys(K pattern) {
+    public scala.concurrent.Future<List<K>> keys(K pattern) {
        return dispatch(KEYS, new KeyListOutput<K, V>(codec), pattern);
     }
 
-    public akka.dispatch.Future<Date> lastsave() {
+    public scala.concurrent.Future<Date> lastsave() {
         return dispatch(LASTSAVE, new DateOutput<K, V>(codec));
     }
 
-    public akka.dispatch.Future<V> lindex(K key, long index) {
+    public scala.concurrent.Future<V> lindex(K key, long index) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(index);
         return dispatch(LINDEX, new ValueOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Long> linsert(K key, boolean before, V pivot, V value) {
+    public scala.concurrent.Future<Long> linsert(K key, boolean before, V pivot, V value) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec);
         args.addKey(key).add(before ? BEFORE : AFTER).addValue(pivot).addValue(value);
         return dispatch(LINSERT, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Long> llen(K key) {
+    public scala.concurrent.Future<Long> llen(K key) {
         return dispatch(LLEN, new IntegerOutput<K, V>(codec), key);
     }
 
-    public akka.dispatch.Future<V> lpop(K key) {
+    public scala.concurrent.Future<V> lpop(K key) {
         return dispatch(LPOP, new ValueOutput<K, V>(codec), key);
     }
 
-    public akka.dispatch.Future<Long> lpush(K key, V... values) {
+    public scala.concurrent.Future<Long> lpush(K key, V... values) {
         return dispatch(LPUSH, new IntegerOutput<K, V>(codec), key, values);
     }
 
-    public akka.dispatch.Future<Long> lpushx(K key, V value) {
+    public scala.concurrent.Future<Long> lpushx(K key, V value) {
         return dispatch(LPUSHX, new IntegerOutput<K, V>(codec), key, value);
     }
 
-    public akka.dispatch.Future<List<V>> lrange(K key, long start, long stop) {
+    public scala.concurrent.Future<List<V>> lrange(K key, long start, long stop) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(start).add(stop);
         return dispatch(LRANGE, new ValueListOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Long> lrem(K key, long count, V value) {
+    public scala.concurrent.Future<Long> lrem(K key, long count, V value) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(count).addValue(value);
         return dispatch(LREM, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<String> lset(K key, long index, V value) {
+    public scala.concurrent.Future<String> lset(K key, long index, V value) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(index).addValue(value);
         return dispatch(LSET, new StatusOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<String> ltrim(K key, long start, long stop) {
+    public scala.concurrent.Future<String> ltrim(K key, long start, long stop) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(start).add(stop);
         return dispatch(LTRIM, new StatusOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<String> migrate(String host, int port, K key, int db, long timeout) {
+    public scala.concurrent.Future<String> migrate(String host, int port, K key, int db, long timeout) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec);
         args.add(host).add(port).addKey(key).add(db).add(timeout);
         return dispatch(MIGRATE, new StatusOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<List<V>> mget(K... keys) {
+    public scala.concurrent.Future<List<V>> mget(K... keys) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKeys(keys);
         return dispatch(MGET, new ValueListOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Boolean> move(K key, int db) {
+    public scala.concurrent.Future<Boolean> move(K key, int db) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(db);
         return dispatch(MOVE, new BooleanOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<String> multi() {
+    public scala.concurrent.Future<String> multi() {
         Command<K, V, String> cmd = dispatchCmd(MULTI, new StatusOutput<K, V>(codec), null);
         multi = (multi == null ? new MultiOutput<K, V>(codec) : multi);
         return cmd.promise;
     }
 
-    public akka.dispatch.Future<String> mset(Map<K, V> map) {
+    public scala.concurrent.Future<String> mset(Map<K, V> map) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).add(map);
         return dispatch(MSET, new StatusOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Boolean> msetnx(Map<K, V> map) {
+    public scala.concurrent.Future<Boolean> msetnx(Map<K, V> map) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).add(map);
         return dispatch(MSETNX, new BooleanOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<String> objectEncoding(K key) {
+    public scala.concurrent.Future<String> objectEncoding(K key) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).add(ENCODING).addKey(key);
         return dispatch(OBJECT, new StatusOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Long> objectIdletime(K key) {
+    public scala.concurrent.Future<Long> objectIdletime(K key) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).add(IDLETIME).addKey(key);
         return dispatch(OBJECT, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Long> objectRefcount(K key) {
+    public scala.concurrent.Future<Long> objectRefcount(K key) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).add(REFCOUNT).addKey(key);
         return dispatch(OBJECT, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Boolean> persist(K key) {
+    public scala.concurrent.Future<Boolean> persist(K key) {
         return dispatch(PERSIST, new BooleanOutput<K, V>(codec), key);
     }
 
-    public akka.dispatch.Future<Boolean> pexpire(K key, long milliseconds) {
+    public scala.concurrent.Future<Boolean> pexpire(K key, long milliseconds) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(milliseconds);
         return dispatch(PEXPIRE, new BooleanOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Boolean> pexpireat(K key, Date timestamp) {
+    public scala.concurrent.Future<Boolean> pexpireat(K key, Date timestamp) {
         return pexpireat(key, timestamp.getTime());
     }
 
-    public akka.dispatch.Future<Boolean> pexpireat(K key, long timestamp) {
+    public scala.concurrent.Future<Boolean> pexpireat(K key, long timestamp) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(timestamp);
         return dispatch(PEXPIREAT, new BooleanOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<String> ping() {
+    public scala.concurrent.Future<String> ping() {
         return dispatch(PING, new StatusOutput<K, V>(codec));
     }
 
-    public akka.dispatch.Future<Long> pttl(K key) {
+    public scala.concurrent.Future<Long> pttl(K key) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key);
         return dispatch(PTTL, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Long> publish(K channel, V message) {
+    public scala.concurrent.Future<Long> publish(K channel, V message) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(channel).addValue(message);
         return dispatch(PUBLISH, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<String> quit() {
+    public scala.concurrent.Future<String> quit() {
         return dispatch(QUIT, new StatusOutput<K, V>(codec));
     }
 
-    public akka.dispatch.Future<V> randomkey() {
+    public scala.concurrent.Future<V> randomkey() {
         return dispatch(RANDOMKEY, new ValueOutput<K, V>(codec));
     }
 
-    public akka.dispatch.Future<String> rename(K key, K newKey) {
+    public scala.concurrent.Future<String> rename(K key, K newKey) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).addKey(newKey);
         return dispatch(RENAME, new StatusOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Boolean> renamenx(K key, K newKey) {
+    public scala.concurrent.Future<Boolean> renamenx(K key, K newKey) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).addKey(newKey);
         return dispatch(RENAMENX, new BooleanOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<String> restore(K key, long ttl, byte[] value) {
+    public scala.concurrent.Future<String> restore(K key, long ttl, byte[] value) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(ttl).add(value);
         return dispatch(RESTORE, new StatusOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<V> rpop(K key) {
+    public scala.concurrent.Future<V> rpop(K key) {
         return dispatch(RPOP, new ValueOutput<K, V>(codec), key);
     }
 
-    public akka.dispatch.Future<V> rpoplpush(K source, K destination) {
+    public scala.concurrent.Future<V> rpoplpush(K source, K destination) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(source).addKey(destination);
         return dispatch(RPOPLPUSH, new ValueOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Long> rpush(K key, V... values) {
+    public scala.concurrent.Future<Long> rpush(K key, V... values) {
         return dispatch(RPUSH, new IntegerOutput<K, V>(codec), key, values);
     }
 
-    public akka.dispatch.Future<Long> rpushx(K key, V value) {
+    public scala.concurrent.Future<Long> rpushx(K key, V value) {
         return dispatch(RPUSHX, new IntegerOutput<K, V>(codec), key, value);
     }
 
-    public akka.dispatch.Future<Long> sadd(K key, V... members) {
+    public scala.concurrent.Future<Long> sadd(K key, V... members) {
         return dispatch(SADD, new IntegerOutput<K, V>(codec), key, members);
     }
 
-    public akka.dispatch.Future<String> save() {
+    public scala.concurrent.Future<String> save() {
         return dispatch(SAVE, new StatusOutput<K, V>(codec));
     }
 
-    public akka.dispatch.Future<Long> scard(K key) {
+    public scala.concurrent.Future<Long> scard(K key) {
         return dispatch(SCARD, new IntegerOutput<K, V>(codec), key);
     }
 
-    public akka.dispatch.Future<List<Boolean>> scriptExists(String... digests) {
+    public scala.concurrent.Future<List<Boolean>> scriptExists(String... digests) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).add(EXISTS);
         for (String sha : digests) args.add(sha);
         return dispatch(SCRIPT, new BooleanListOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<String> scriptFlush() {
+    public scala.concurrent.Future<String> scriptFlush() {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).add(FLUSH);
         return dispatch(SCRIPT, new StatusOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<String> scriptKill() {
+    public scala.concurrent.Future<String> scriptKill() {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).add(KILL);
         return dispatch(SCRIPT, new StatusOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<String> scriptLoad(V script) {
+    public scala.concurrent.Future<String> scriptLoad(V script) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).add(LOAD).addValue(script);
         return dispatch(SCRIPT, new StatusOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Set<V>> sdiff(K... keys) {
+    public scala.concurrent.Future<Set<V>> sdiff(K... keys) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKeys(keys);
         return dispatch(SDIFF, new ValueSetOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Long> sdiffstore(K destination, K... keys) {
+    public scala.concurrent.Future<Long> sdiffstore(K destination, K... keys) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(destination).addKeys(keys);
         return dispatch(SDIFFSTORE, new IntegerOutput<K, V>(codec), args);
     }
@@ -570,25 +570,25 @@ public class RedisAsyncConnection<K, V> extends SimpleChannelUpstreamHandler {
         return status;
     }
 
-    public akka.dispatch.Future<String> set(K key, V value) {
+    public scala.concurrent.Future<String> set(K key, V value) {
         return dispatch(SET, new StatusOutput<K, V>(codec), key, value);
     }
 
-    public akka.dispatch.Future<Long> setbit(K key, long offset, int value) {
+    public scala.concurrent.Future<Long> setbit(K key, long offset, int value) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(offset).add(value);
         return dispatch(SETBIT, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<String> setex(K key, long seconds, V value) {
+    public scala.concurrent.Future<String> setex(K key, long seconds, V value) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(seconds).addValue(value);
         return dispatch(SETEX, new StatusOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Boolean> setnx(K key, V value) {
+    public scala.concurrent.Future<Boolean> setnx(K key, V value) {
         return dispatch(SETNX, new BooleanOutput<K, V>(codec), key, value);
     }
 
-    public akka.dispatch.Future<Long> setrange(K key, long offset, V value) {
+    public scala.concurrent.Future<Long> setrange(K key, long offset, V value) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(offset).addValue(value);
         return dispatch(SETRANGE, new IntegerOutput<K, V>(codec), args);
     }
@@ -603,134 +603,134 @@ public class RedisAsyncConnection<K, V> extends SimpleChannelUpstreamHandler {
         dispatch(SHUTDOWN, new StatusOutput<K, V>(codec), save ? args.add(SAVE) : args.add(NOSAVE));
     }
 
-    public akka.dispatch.Future<Set<V>> sinter(K... keys) {
+    public scala.concurrent.Future<Set<V>> sinter(K... keys) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKeys(keys);
         return dispatch(SINTER, new ValueSetOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Long> sinterstore(K destination, K... keys) {
+    public scala.concurrent.Future<Long> sinterstore(K destination, K... keys) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(destination).addKeys(keys);
         return dispatch(SINTERSTORE, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Boolean> sismember(K key, V member) {
+    public scala.concurrent.Future<Boolean> sismember(K key, V member) {
         return dispatch(SISMEMBER, new BooleanOutput<K, V>(codec), key, member);
     }
 
-    public akka.dispatch.Future<Boolean> smove(K source, K destination, V member) {
+    public scala.concurrent.Future<Boolean> smove(K source, K destination, V member) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(source).addKey(destination).addValue(member);
         return dispatch(SMOVE, new BooleanOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<String> slaveof(String host, int port) {
+    public scala.concurrent.Future<String> slaveof(String host, int port) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).add(host).add(port);
         return dispatch(SLAVEOF, new StatusOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<String> slaveofNoOne() {
+    public scala.concurrent.Future<String> slaveofNoOne() {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).add(NO).add(ONE);
         return dispatch(SLAVEOF, new StatusOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<List<Object>> slowlogGet() {
+    public scala.concurrent.Future<List<Object>> slowlogGet() {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).add(GET);
         return dispatch(SLOWLOG, new NestedMultiOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<List<Object>> slowlogGet(int count) {
+    public scala.concurrent.Future<List<Object>> slowlogGet(int count) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).add(GET).add(count);
         return dispatch(SLOWLOG, new NestedMultiOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Long> slowlogLen() {
+    public scala.concurrent.Future<Long> slowlogLen() {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).add(LEN);
         return dispatch(SLOWLOG, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<String> slowlogReset() {
+    public scala.concurrent.Future<String> slowlogReset() {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).add(RESET);
         return dispatch(SLOWLOG, new StatusOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Set<V>> smembers(K key) {
+    public scala.concurrent.Future<Set<V>> smembers(K key) {
         return dispatch(SMEMBERS, new ValueSetOutput<K, V>(codec), key);
     }
 
-    public akka.dispatch.Future<List<V>> sort(K key) {
+    public scala.concurrent.Future<List<V>> sort(K key) {
         return dispatch(SORT, new ValueListOutput<K, V>(codec), key);
     }
 
-    public akka.dispatch.Future<List<V>> sort(K key, SortArgs sortArgs) {
+    public scala.concurrent.Future<List<V>> sort(K key, SortArgs sortArgs) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key);
         sortArgs.build(args, null);
         return dispatch(SORT, new ValueListOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Long> sortStore(K key, SortArgs sortArgs, K destination) {
+    public scala.concurrent.Future<Long> sortStore(K key, SortArgs sortArgs, K destination) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key);
         sortArgs.build(args, destination);
         return dispatch(SORT, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<V> spop(K key) {
+    public scala.concurrent.Future<V> spop(K key) {
         return dispatch(SPOP, new ValueOutput<K, V>(codec), key);
     }
 
-    public akka.dispatch.Future<V> srandmember(K key) {
+    public scala.concurrent.Future<V> srandmember(K key) {
         return dispatch(SRANDMEMBER, new ValueOutput<K, V>(codec), key);
     }
 
-    public akka.dispatch.Future<Set<V>> srandmember(K key, long count) {
+    public scala.concurrent.Future<Set<V>> srandmember(K key, long count) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(count);
         return dispatch(SRANDMEMBER, new ValueSetOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Long> srem(K key, V... members) {
+    public scala.concurrent.Future<Long> srem(K key, V... members) {
         return dispatch(SREM, new IntegerOutput<K, V>(codec), key, members);
     }
 
-    public akka.dispatch.Future<Set<V>> sunion(K... keys) {
+    public scala.concurrent.Future<Set<V>> sunion(K... keys) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKeys(keys);
         return dispatch(SUNION, new ValueSetOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Long> sunionstore(K destination, K... keys) {
+    public scala.concurrent.Future<Long> sunionstore(K destination, K... keys) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(destination).addKeys(keys);
         return dispatch(SUNIONSTORE, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<String> sync() {
+    public scala.concurrent.Future<String> sync() {
         return dispatch(SYNC, new StatusOutput<K, V>(codec));
     }
 
-    public akka.dispatch.Future<Long> strlen(K key) {
+    public scala.concurrent.Future<Long> strlen(K key) {
         return dispatch(STRLEN, new IntegerOutput<K, V>(codec), key);
     }
 
-    public akka.dispatch.Future<Long> ttl(K key) {
+    public scala.concurrent.Future<Long> ttl(K key) {
         return dispatch(TTL, new IntegerOutput<K, V>(codec), key);
     }
 
-    public akka.dispatch.Future<String> type(K key) {
+    public scala.concurrent.Future<String> type(K key) {
         return dispatch(TYPE, new StatusOutput<K, V>(codec), key);
     }
 
-    public akka.dispatch.Future<String> watch(K... keys) {
+    public scala.concurrent.Future<String> watch(K... keys) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKeys(keys);
         return dispatch(WATCH, new StatusOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<String> unwatch() {
+    public scala.concurrent.Future<String> unwatch() {
         return dispatch(UNWATCH, new StatusOutput<K, V>(codec));
     }
 
-    public akka.dispatch.Future<Long> zadd(K key, double score, V member) {
+    public scala.concurrent.Future<Long> zadd(K key, double score, V member) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(score).addValue(member);
         return dispatch(ZADD, new IntegerOutput<K, V>(codec), args);
     }
 
     @SuppressWarnings("unchecked")
-    public akka.dispatch.Future<Long> zadd(K key, Object... scoresAndValues) {
+    public scala.concurrent.Future<Long> zadd(K key, Object... scoresAndValues) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key);
         for (int i = 0; i < scoresAndValues.length; i += 2) {
             args.add((Double) scoresAndValues[i]);
@@ -739,169 +739,169 @@ public class RedisAsyncConnection<K, V> extends SimpleChannelUpstreamHandler {
         return dispatch(ZADD, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Long> zcard(K key) {
+    public scala.concurrent.Future<Long> zcard(K key) {
         return dispatch(ZCARD, new IntegerOutput<K, V>(codec), key);
     }
 
-    public akka.dispatch.Future<Long> zcount(K key, double min, double max) {
+    public scala.concurrent.Future<Long> zcount(K key, double min, double max) {
         return zcount(key, string(min), string(max));
     }
 
-    public akka.dispatch.Future<Long> zcount(K key, String min, String max) {
+    public scala.concurrent.Future<Long> zcount(K key, String min, String max) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(min).add(max);
         return dispatch(ZCOUNT, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Double> zincrby(K key, double amount, K member) {
+    public scala.concurrent.Future<Double> zincrby(K key, double amount, K member) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(amount).addKey(member);
         return dispatch(ZINCRBY, new DoubleOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Long> zinterstore(K destination, K... keys) {
+    public scala.concurrent.Future<Long> zinterstore(K destination, K... keys) {
         return zinterstore(destination, new ZStoreArgs(), keys);
     }
 
-    public akka.dispatch.Future<Long> zinterstore(K destination, ZStoreArgs storeArgs, K... keys) {
+    public scala.concurrent.Future<Long> zinterstore(K destination, ZStoreArgs storeArgs, K... keys) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(destination).add(keys.length).addKeys(keys);
         storeArgs.build(args);
         return dispatch(ZINTERSTORE, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<List<V>> zrange(K key, long start, long stop) {
+    public scala.concurrent.Future<List<V>> zrange(K key, long start, long stop) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(start).add(stop);
         return dispatch(ZRANGE, new ValueListOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<List<ScoredValue<V>>> zrangeWithScores(K key, long start, long stop) {
+    public scala.concurrent.Future<List<ScoredValue<V>>> zrangeWithScores(K key, long start, long stop) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec);
         args.addKey(key).add(start).add(stop).add(WITHSCORES);
         return dispatch(ZRANGE, new ScoredValueListOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<List<V>> zrangebyscore(K key, double min, double max) {
+    public scala.concurrent.Future<List<V>> zrangebyscore(K key, double min, double max) {
         return zrangebyscore(key, string(min), string(max));
     }
 
-    public akka.dispatch.Future<List<V>> zrangebyscore(K key, String min, String max) {
+    public scala.concurrent.Future<List<V>> zrangebyscore(K key, String min, String max) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(min).add(max);
         return dispatch(ZRANGEBYSCORE, new ValueListOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<List<V>> zrangebyscore(K key, double min, double max, long offset, long count) {
+    public scala.concurrent.Future<List<V>> zrangebyscore(K key, double min, double max, long offset, long count) {
         return zrangebyscore(key, string(min), string(max), offset, count);
     }
 
-    public akka.dispatch.Future<List<V>> zrangebyscore(K key, String min, String max, long offset, long count) {
+    public scala.concurrent.Future<List<V>> zrangebyscore(K key, String min, String max, long offset, long count) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec);
         args.addKey(key).add(min).add(max).add(LIMIT).add(offset).add(count);
         return dispatch(ZRANGEBYSCORE, new ValueListOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<List<ScoredValue<V>>> zrangebyscoreWithScores(K key, double min, double max) {
+    public scala.concurrent.Future<List<ScoredValue<V>>> zrangebyscoreWithScores(K key, double min, double max) {
         return zrangebyscoreWithScores(key, string(min), string(max));
     }
 
-    public akka.dispatch.Future<List<ScoredValue<V>>> zrangebyscoreWithScores(K key, String min, String max) {
+    public scala.concurrent.Future<List<ScoredValue<V>>> zrangebyscoreWithScores(K key, String min, String max) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec);
         args.addKey(key).add(min).add(max).add(WITHSCORES);
         return dispatch(ZRANGEBYSCORE, new ScoredValueListOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<List<ScoredValue<V>>> zrangebyscoreWithScores(K key, double min, double max, long offset, long count) {
+    public scala.concurrent.Future<List<ScoredValue<V>>> zrangebyscoreWithScores(K key, double min, double max, long offset, long count) {
         return zrangebyscoreWithScores(key, string(min), string(max), offset, count);
     }
 
-    public akka.dispatch.Future<List<ScoredValue<V>>> zrangebyscoreWithScores(K key, String min, String max, long offset, long count) {
+    public scala.concurrent.Future<List<ScoredValue<V>>> zrangebyscoreWithScores(K key, String min, String max, long offset, long count) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec);
         args.addKey(key).add(min).add(max).add(WITHSCORES).add(LIMIT).add(offset).add(count);
         return dispatch(ZRANGEBYSCORE, new ScoredValueListOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Long> zrank(K key, V member) {
+    public scala.concurrent.Future<Long> zrank(K key, V member) {
         return dispatch(ZRANK, new IntegerOutput<K, V>(codec), key, member);
     }
 
-    public akka.dispatch.Future<Long> zrem(K key, V... members) {
+    public scala.concurrent.Future<Long> zrem(K key, V... members) {
         return dispatch(ZREM, new IntegerOutput<K, V>(codec), key, members);
     }
 
-    public akka.dispatch.Future<Long> zremrangebyrank(K key, long start, long stop) {
+    public scala.concurrent.Future<Long> zremrangebyrank(K key, long start, long stop) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(start).add(stop);
         return dispatch(ZREMRANGEBYRANK, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Long> zremrangebyscore(K key, double min, double max) {
+    public scala.concurrent.Future<Long> zremrangebyscore(K key, double min, double max) {
         return zremrangebyscore(key, string(min), string(max));
     }
 
-    public akka.dispatch.Future<Long> zremrangebyscore(K key, String min, String max) {
+    public scala.concurrent.Future<Long> zremrangebyscore(K key, String min, String max) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(min).add(max);
         return dispatch(ZREMRANGEBYSCORE, new IntegerOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<List<V>> zrevrange(K key, long start, long stop) {
+    public scala.concurrent.Future<List<V>> zrevrange(K key, long start, long stop) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(start).add(stop);
         return dispatch(ZREVRANGE, new ValueListOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<List<ScoredValue<V>>> zrevrangeWithScores(K key, long start, long stop) {
+    public scala.concurrent.Future<List<ScoredValue<V>>> zrevrangeWithScores(K key, long start, long stop) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec);
         args.addKey(key).add(start).add(stop).add(WITHSCORES);
         return dispatch(ZREVRANGE, new ScoredValueListOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<List<V>> zrevrangebyscore(K key, double max, double min) {
+    public scala.concurrent.Future<List<V>> zrevrangebyscore(K key, double max, double min) {
         return zrevrangebyscore(key, string(max), string(min));
     }
 
-    public akka.dispatch.Future<List<V>> zrevrangebyscore(K key, String max, String min) {
+    public scala.concurrent.Future<List<V>> zrevrangebyscore(K key, String max, String min) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).add(max).add(min);
         return dispatch(ZREVRANGEBYSCORE, new ValueListOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<List<V>> zrevrangebyscore(K key, double max, double min, long offset, long count) {
+    public scala.concurrent.Future<List<V>> zrevrangebyscore(K key, double max, double min, long offset, long count) {
         return zrevrangebyscore(key, string(max), string(min), offset, count);
     }
 
-    public akka.dispatch.Future<List<V>> zrevrangebyscore(K key, String max, String min, long offset, long count) {
+    public scala.concurrent.Future<List<V>> zrevrangebyscore(K key, String max, String min, long offset, long count) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec);
         args.addKey(key).add(max).add(min).add(LIMIT).add(offset).add(count);
         return dispatch(ZREVRANGEBYSCORE, new ValueListOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<List<ScoredValue<V>>> zrevrangebyscoreWithScores(K key, double max, double min) {
+    public scala.concurrent.Future<List<ScoredValue<V>>> zrevrangebyscoreWithScores(K key, double max, double min) {
         return zrevrangebyscoreWithScores(key, string(max), string(min));
     }
 
-    public akka.dispatch.Future<List<ScoredValue<V>>> zrevrangebyscoreWithScores(K key, String max, String min) {
+    public scala.concurrent.Future<List<ScoredValue<V>>> zrevrangebyscoreWithScores(K key, String max, String min) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec);
         args.addKey(key).add(max).add(min).add(WITHSCORES);
         return dispatch(ZREVRANGEBYSCORE, new ScoredValueListOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<List<ScoredValue<V>>> zrevrangebyscoreWithScores(K key, double max, double min, long offset, long count) {
+    public scala.concurrent.Future<List<ScoredValue<V>>> zrevrangebyscoreWithScores(K key, double max, double min, long offset, long count) {
         return zrevrangebyscoreWithScores(key, string(max), string(min), offset, count);
     }
 
-    public akka.dispatch.Future<List<ScoredValue<V>>> zrevrangebyscoreWithScores(K key, String max, String min, long offset, long count) {
+    public scala.concurrent.Future<List<ScoredValue<V>>> zrevrangebyscoreWithScores(K key, String max, String min, long offset, long count) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec);
         args.addKey(key).add(max).add(min).add(WITHSCORES).add(LIMIT).add(offset).add(count);
         return dispatch(ZREVRANGEBYSCORE, new ScoredValueListOutput<K, V>(codec), args);
     }
 
-    public akka.dispatch.Future<Long> zrevrank(K key, V member) {
+    public scala.concurrent.Future<Long> zrevrank(K key, V member) {
         return dispatch(ZREVRANK, new IntegerOutput<K, V>(codec), key, member);
     }
 
-    public akka.dispatch.Future<Double> zscore(K key, V member) {
+    public scala.concurrent.Future<Double> zscore(K key, V member) {
         return dispatch(ZSCORE, new DoubleOutput<K, V>(codec), key, member);
     }
 
-    public akka.dispatch.Future<Long> zunionstore(K destination, K... keys) {
+    public scala.concurrent.Future<Long> zunionstore(K destination, K... keys) {
         return zunionstore(destination, new ZStoreArgs(), keys);
     }
 
-    public akka.dispatch.Future<Long> zunionstore(K destination, ZStoreArgs storeArgs, K... keys) {
+    public scala.concurrent.Future<Long> zunionstore(K destination, ZStoreArgs storeArgs, K... keys) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec);
         args.addKey(destination).add(keys.length).addKeys(keys);
         storeArgs.build(args);
@@ -1017,26 +1017,26 @@ public class RedisAsyncConnection<K, V> extends SimpleChannelUpstreamHandler {
         }
     }
 
-    public <T> akka.dispatch.Future<T> dispatch(CommandType type, CommandOutput<K, V, T> output) {
+    public <T> scala.concurrent.Future<T> dispatch(CommandType type, CommandOutput<K, V, T> output) {
         return dispatch(type, output, (CommandArgs<K, V>) null);
     }
 
-    public <T> akka.dispatch.Future<T> dispatch(CommandType type, CommandOutput<K, V, T> output, K key) {
+    public <T> scala.concurrent.Future<T> dispatch(CommandType type, CommandOutput<K, V, T> output, K key) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key);
         return dispatch(type, output, args);
     }
 
-    public <T> akka.dispatch.Future<T> dispatch(CommandType type, CommandOutput<K, V, T> output, K key, V value) {
+    public <T> scala.concurrent.Future<T> dispatch(CommandType type, CommandOutput<K, V, T> output, K key, V value) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).addValue(value);
         return dispatch(type, output, args);
     }
 
-    public <T> akka.dispatch.Future<T> dispatch(CommandType type, CommandOutput<K, V, T> output, K key, V[] values) {
+    public <T> scala.concurrent.Future<T> dispatch(CommandType type, CommandOutput<K, V, T> output, K key, V[] values) {
         CommandArgs<K, V> args = new CommandArgs<K, V>(codec).addKey(key).addValues(values);
         return dispatch(type, output, args);
     }
 
-    public <T> akka.dispatch.Future<T> dispatch(CommandType type, CommandOutput<K, V, T> output, CommandArgs<K, V> args) {
+    public <T> scala.concurrent.Future<T> dispatch(CommandType type, CommandOutput<K, V, T> output, CommandArgs<K, V> args) {
         return dispatchCmd(type, output, args).promise;
     }
 

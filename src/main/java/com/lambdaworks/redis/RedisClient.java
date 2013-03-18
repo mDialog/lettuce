@@ -18,7 +18,7 @@ import org.jboss.netty.util.Timer;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.concurrent.*;
-import akka.dispatch.ExecutionContext;
+import scala.concurrent.ExecutionContext;
 
 /**
  * A scalable thread-safe <a href="http://redis.io/">Redis</a> client. Multiple threads
