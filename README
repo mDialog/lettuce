@@ -4,6 +4,7 @@ lettuce - A scalable Java Redis client
   to support integration with scala + akka projects. Only asynchronous
   connections are currently supported.
 
+
   Lettuce is a scalable thread-safe Redis client providing both synchronous and
   asynchronous connections. Multiple threads may share one connection provided
   they avoid blocking and transactional operations such as BLPOP, and MULTI/EXEC.

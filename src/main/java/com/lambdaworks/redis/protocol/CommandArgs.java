@@ -24,7 +24,7 @@ public class CommandArgs<K, V> {
 
     public CommandArgs(RedisCodec<K, V> codec) {
         this.codec  = codec;
-        this.buffer = ByteBuffer.allocate(32);
+        this.buffer = ByteBuffer.allocate(1024);
     }
 
     public ByteBuffer buffer() {
@@ -59,10 +59,6 @@ public class CommandArgs<K, V> {
     }
 
     public CommandArgs<K, V> add(Map<K, V> map) {
-        if (map.size() > 2) {
-            realloc(16 * map.size());
-        }
-
         for (Map.Entry<K, V> entry : map.entrySet()) {
             write(codec.encodeKey(entry.getKey()));
             write(codec.encodeValue(entry.getValue()));
@@ -96,26 +92,15 @@ public class CommandArgs<K, V> {
     }
 
     private CommandArgs<K, V> write(byte[] arg) {
-        buffer.mark();
-
-        if (buffer.remaining() < arg.length) {
-            int estimate = buffer.remaining() + arg.length + 10;
-            realloc(max(buffer.capacity() * 2, estimate));
+        while (buffer.remaining() < (arg.length + 16)) {
+            realloc(buffer.capacity() * 2);
         }
 
-        while (true) {
-            try {
-                buffer.put((byte) '$');
-                write(arg.length);
-                buffer.put(CRLF);
-                buffer.put(arg);
-                buffer.put(CRLF);
-                break;
-            } catch (BufferOverflowException e) {
-                buffer.reset();
-                realloc(buffer.capacity() * 2);
-            }
-        }
+        buffer.put((byte) '$');
+        writeLong(arg.length);
+        buffer.put(CRLF);
+        buffer.put(arg);
+        buffer.put(CRLF);
 
         count++;
         return this;
@@ -124,40 +109,30 @@ public class CommandArgs<K, V> {
     private CommandArgs<K, V> write(String arg) {
         int length = arg.length();
 
-        buffer.mark();
-
-        if (buffer.remaining() < length) {
-            int estimate = buffer.remaining() + length + 10;
-            realloc(max(buffer.capacity() * 2, estimate));
+        while (buffer.remaining() < (length + 16)) {
+            realloc(buffer.capacity() * 2);
         }
 
-        while (true) {
-            try {
-                buffer.put((byte) '$');
-                write(length);
-                buffer.put(CRLF);
-                for (int i = 0; i < length; i++) {
-                    buffer.put((byte) arg.charAt(i));
-                }
-                buffer.put(CRLF);
-                break;
-            } catch (BufferOverflowException e) {
-                buffer.reset();
-                realloc(buffer.capacity() * 2);
-            }
+        buffer.put((byte) '$');
+        writeLong(length);
+        buffer.put(CRLF);
+        for (int i = 0; i < length; i++) {
+            buffer.put((byte) arg.charAt(i));
         }
+        buffer.put(CRLF);
 
         count++;
         return this;
     }
 
-    private void write(long value) {
+    //write a long in decimal form, 10 bytes or less
+    private void writeLong(long value) {
         if (value < 10) {
             buffer.put((byte) ('0' + value));
             return;
         }
 
-        StringBuilder sb = new StringBuilder(8);
+        StringBuilder sb = new StringBuilder(10);
         while (value > 0) {
             long digit = value % 10;
             sb.append((char) ('0' + digit));
@@ -173,7 +148,6 @@ public class CommandArgs<K, V> {
         ByteBuffer buffer = ByteBuffer.allocate(size);
         this.buffer.flip();
         buffer.put(this.buffer);
-        buffer.mark();
         this.buffer = buffer;
     }
 }

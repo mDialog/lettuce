@@ -23,7 +23,7 @@ public class CommandInternalsTest {
     @Before
     public final void createCommand() throws Exception {
         CommandOutput<String, String, String> output = new StatusOutput<String, String>(codec);
-        command = new Command<String, String, String>(CommandType.INFO, output, null, false);
+        command = new Command<String, String, String>(CommandType.INFO, output, null, false, null);
     }
 
     @Test
