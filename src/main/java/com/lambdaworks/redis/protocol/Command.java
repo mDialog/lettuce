@@ -9,8 +9,8 @@ import org.jboss.netty.buffer.ChannelBuffer;
 import java.util.concurrent.*;
 import scala.concurrent.Promise;
 import scala.concurrent.ExecutionContext;
-import scala.Right;
-import scala.Left;
+import scala.util.Success;
+import scala.util.Failure;
 
 /**
  * A redis command and its result. All successfully executed commands will
@@ -46,7 +46,9 @@ public class Command<K, V, T> implements Future<T> {
         this.output = output;
         this.args   = args;
         this.latch  = new CountDownLatch(multi ? 2 : 1);
-        this.promise = new scala.concurrent.impl.Promise.DefaultPromise<T>(executor);
+        this.promise = new scala.concurrent.impl.Promise.DefaultPromise<T>();
+
+        //this.promise = Promise<T>;
     }
 
     /**
@@ -159,9 +161,9 @@ public class Command<K, V, T> implements Future<T> {
     public void complete() {
         latch.countDown();
         if (output.hasError()) {
-            promise.complete( new Left<Throwable, T>(new RedisException(output.getError())) );
+            promise.complete(new Failure<T>(new RedisException(output.getError())));
         } else {
-            promise.complete( new Right<Throwable, T>(output.get()) );
+            promise.complete( new Success<T>(output.get()) );
         }
     }
 

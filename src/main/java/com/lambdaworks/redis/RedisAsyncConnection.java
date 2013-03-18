@@ -419,7 +419,7 @@ public class RedisAsyncConnection<K, V> extends SimpleChannelUpstreamHandler {
     public scala.concurrent.Future<String> multi() {
         Command<K, V, String> cmd = dispatchCmd(MULTI, new StatusOutput<K, V>(codec), null);
         multi = (multi == null ? new MultiOutput<K, V>(codec) : multi);
-        return cmd.promise;
+        return cmd.promise.future();
     }
 
     public scala.concurrent.Future<String> mset(Map<K, V> map) {
@@ -1037,7 +1037,7 @@ public class RedisAsyncConnection<K, V> extends SimpleChannelUpstreamHandler {
     }
 
     public <T> scala.concurrent.Future<T> dispatch(CommandType type, CommandOutput<K, V, T> output, CommandArgs<K, V> args) {
-        return dispatchCmd(type, output, args).promise;
+        return dispatchCmd(type, output, args).promise.future();
     }
 
     public synchronized <T> Command<K, V, T> dispatchCmd(CommandType type, CommandOutput<K, V, T> output, CommandArgs<K, V> args) {
