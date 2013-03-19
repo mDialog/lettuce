@@ -12,7 +12,7 @@ lettuce - A scalable Java Redis client
   framework.
 
   This version of lettuce has been tested against redis 2.6.2
-
+ 
   Join the lambdaWorks-OSS Google Group to discuss this project:
 
     http://groups.google.com/group/lambdaworks-oss
