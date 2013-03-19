@@ -160,7 +160,7 @@ public class Command<K, V, T> implements Future<T> {
      */
     public void complete() {
         latch.countDown();
-        if (output.hasError()) {
+            if (output.hasError()) {
             promise.complete(new Failure<T>(new RedisException(output.getError())));
         } else {
             promise.complete( new Success<T>(output.get()) );
